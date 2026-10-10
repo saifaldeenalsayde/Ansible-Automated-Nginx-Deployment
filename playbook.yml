@@ -1,0 +1,38 @@
+---
+- name: Install and Configure Nginx Web Server
+  hosts: debian_servers
+  become: true
+
+  tasks:
+    - name: Update apt cache and install Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Ensure Nginx service is running and enabled
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Deploy custom index.html page
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Welcome to Ansible Managed Server</title>
+              <style>
+                  body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; }
+                  h1 { color: #2c3e50; }
+                  p { color: #7f8c8d; }
+              </style>
+          </head>
+          <body>
+              <h1>Deployed via Ansible Automation!</h1>
+              <p>Server IP: 192.168.20.20</p>
+          </body>
+          </html>
+        mode: '0644'
